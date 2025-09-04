@@ -71,7 +71,7 @@ def prediction_page():
 
         # Define model columns
         model_columns = [
-           'GENDER': [GENDER],
+            'GENDER': [GENDER],
             'AGE': [AGE],
             'SMOKING': [SMOKING],
             'YELLOW_FINGERS': [YELLOW_FINGERS],
@@ -168,6 +168,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 

@@ -83,6 +83,7 @@ def prediction_page():
         st.write(input_df.columns)
 
         # Ensure all column names in the dataset are stripped of spaces or match exactly
+        input_df.columns = input_df.columns.str.strip()
         input_df.columns = input_df.columns.str.replace(' ', '_')
 
         # Copy continuous variables
@@ -171,4 +172,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 

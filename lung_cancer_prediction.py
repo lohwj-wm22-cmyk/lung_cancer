@@ -114,10 +114,6 @@ def prediction_page():
             if model_col in model_columns:
                 encoded_input_df[model_col] = input_df[input_col]
 
-        # Debug: Show what we're sending to the model
-        st.write("📊 Input data being sent to model:")
-        st.dataframe(encoded_input_df)
-
         if scaler:
             try:
                 # Ensure the column order matches exactly what the scaler expects

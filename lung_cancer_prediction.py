@@ -69,30 +69,51 @@ def prediction_page():
 
         input_df = pd.DataFrame(input_data)
 
-        # Define model columns - FIXED: Using proper column names
-        model_columns = ['AGE','GENDER_M', 'GENDER_F', 'SMOKING', 'YELLOW_FINGERS',
-                         'ANXIETY', 'PEER_PRESSURE', 'CHRONIC_DISEASE', 'FATIGUE',
-                         'ALLERGY', 'WHEEZING', 'ALCOHOL_CONSUMING', 'COUGHING',
-                         'SHORTNESS_OF_BREATH', 'SWALLOWING_DIFFICULTY', 'CHEST_PAIN']
+        # Get the correct feature names from the scaler (if available)
+        if hasattr(scaler, "feature_names_in_"):
+            model_columns = scaler.feature_names_in_.tolist()
+            st.write("🔍 Using feature names from scaler:", model_columns)
+        else:
+            # Fallback: Use the expected column order (you might need to adjust this)
+            model_columns = ['AGE', 'GENDER_M', 'GENDER_F', 'SMOKING', 'YELLOW_FINGERS',
+                            'ANXIETY', 'PEER_PRESSURE', 'CHRONIC_DISEASE', 'FATIGUE',
+                            'ALLERGY', 'WHEEZING', 'ALCOHOL_CONSUMING', 'COUGHING',
+                            'SHORTNESS_OF_BREATH', 'SWALLOWING_DIFFICULTY', 'CHEST_PAIN']
+            st.warning("⚠️ Using fallback feature names. Check if this matches your model training.")
 
-        # Create a simpler encoded dataframe without one-hot encoding
+        # Create encoded dataframe with correct column order
         encoded_input_df = pd.DataFrame(0, index=input_df.index, columns=model_columns)
         
-        # Set AGE directly
-        encoded_input_df['AGE'] = input_df['AGE']
+        # Set AGE
+        if 'AGE' in model_columns:
+            encoded_input_df['AGE'] = input_df['AGE']
         
         # Encode gender
-        encoded_input_df['GENDER_M'] = 1 if GENDER == 'M' else 0
-        encoded_input_df['GENDER_F'] = 1 if GENDER == 'F' else 0
+        if 'GENDER_M' in model_columns:
+            encoded_input_df['GENDER_M'] = 1 if GENDER == 'M' else 0
+        if 'GENDER_F' in model_columns:
+            encoded_input_df['GENDER_F'] = 1 if GENDER == 'F' else 0
         
-        # Set binary variables directly (they're already 0/1)
-        binary_vars = ['SMOKING', 'YELLOW_FINGERS', 'ANXIETY', 'PEER_PRESSURE', 
-                      'CHRONIC_DISEASE', 'FATIGUE', 'ALLERGY', 'WHEEZING', 
-                      'ALCOHOL_CONSUMING', 'COUGHING', 'SHORTNESS_OF_BREATH', 
-                      'SWALLOWING_DIFFICULTY', 'CHEST_PAIN']
+        # Set binary variables
+        binary_mapping = {
+            'SMOKING': 'SMOKING',
+            'YELLOW_FINGERS': 'YELLOW_FINGERS',
+            'ANXIETY': 'ANXIETY',
+            'PEER_PRESSURE': 'PEER_PRESSURE',
+            'CHRONIC_DISEASE': 'CHRONIC_DISEASE',
+            'FATIGUE': 'FATIGUE',
+            'ALLERGY': 'ALLERGY',
+            'WHEEZING': 'WHEEZING',
+            'ALCOHOL_CONSUMING': 'ALCOHOL_CONSUMING',
+            'COUGHING': 'COUGHING',
+            'SHORTNESS_OF_BREATH': 'SHORTNESS_OF_BREATH',
+            'SWALLOWING_DIFFICULTY': 'SWALLOWING_DIFFICULTY',
+            'CHEST_PAIN': 'CHEST_PAIN'
+        }
         
-        for var in binary_vars:
-            encoded_input_df[var] = input_df[var]
+        for input_col, model_col in binary_mapping.items():
+            if model_col in model_columns:
+                encoded_input_df[model_col] = input_df[input_col]
 
         # Debug: Show what we're sending to the model
         st.write("📊 Input data being sent to model:")
@@ -100,6 +121,9 @@ def prediction_page():
 
         if scaler:
             try:
+                # Ensure the column order matches exactly what the scaler expects
+                encoded_input_df = encoded_input_df[model_columns]
+                
                 # Scale input
                 input_df_scaled = scaler.transform(encoded_input_df)
 
@@ -112,6 +136,8 @@ def prediction_page():
                 st.write("Encoded DataFrame columns:", encoded_input_df.columns.tolist())
                 if hasattr(scaler, "feature_names_in_"):
                     st.write("Scaler feature names:", scaler.feature_names_in_.tolist())
+                # Show the actual values being sent
+                st.write("Data being sent:", encoded_input_df.values)
         else:
             st.error("⚠️ Scaler not loaded. Please check scaler.pkl.")
 
@@ -143,5 +169,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-

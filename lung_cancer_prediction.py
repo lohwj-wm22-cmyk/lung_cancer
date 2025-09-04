@@ -2,9 +2,6 @@ import streamlit as st
 import pandas as pd
 from joblib import load
 from sklearn.preprocessing import MinMaxScaler
-import os
-print(f"Current directory: {os.getcwd()}")
-print(f"Files present: {os.listdir('.')}")
 
 # Load the trained models
 # lr_model = load('logreg_model.joblib')
@@ -167,4 +164,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 

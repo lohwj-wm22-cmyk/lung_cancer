@@ -30,28 +30,28 @@ def prediction_page():
     st.write('FILL IN THE PATIENT DETAILS TO PREDICT THE RISK OF LUNG CANCER.')
 
     # Input fields for user data
-    AGE = st.number_input('AGE 🎂', min_value=0, max_value=120, value=50)
-    GENDER = st.selectbox('GENDER 👤', ['M', 'F'])
-    SMOKING = st.selectbox('DO YOU SMOKE? 🚬', ['YES', 'NO'])
-    YELLOW_FINGERS = st.selectbox('YELLOW FINGERS ✋', ['YES', 'NO'])
-    ANXIETY = st.selectbox('ANXIETY 😟', ['YES', 'NO'])
-    PEER_PRESSURE = st.selectbox('PEER PRESSURE 👥', ['YES', 'NO'])
-    CHRONIC_DISEASE = st.selectbox('CHRONIC DISEASE 🏥', ['YES', 'NO'])
-    FATIGUE = st.selectbox('FATIGUE 😴', ['YES', 'NO'])
-    ALLERGY = st.selectbox('ALLERGY 🤧', ['YES', 'NO'])
-    WHEEZING = st.selectbox('WHEEZING 😤', ['YES', 'NO'])
-    ALCOHOL_CONSUMPTION = st.selectbox('ALCOHOL CONSUMPTION 🍺', ['YES', 'NO'])
-    COUGHING = st.selectbox('COUGHING 🤧', ['YES', 'NO'])
-    SHORTNESS_OF_BREATH = st.selectbox('SHORTNESS OF BREATH 🫁', ['YES', 'NO'])
-    SWALLOWING_DIFFICULTY = st.selectbox('SWALLOWING DIFFICULTY 😣', ['YES', 'NO'])
-    CHEST_PAIN = st.selectbox('CHEST PAIN ❤️‍🩹', ['YES', 'NO'])
+    GENDER = st.selectbox('Gender 👤', ['M', 'F'])
+    AGE = st.number_input('Age 🎂', min_value=0, max_value=120, value=25)
+    SMOKING = st.selectbox('DO YOU SMOKE? 🚬', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    YELLOW_FINGERS = st.selectbox('YELLOW FINGERS ✋', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    ANXIETY = st.selectbox('ANXIETY 😟', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    PEER_PRESSURE = st.selectbox('PEER PRESSURE 👥', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    CHRONIC_DISEASE = st.selectbox('CHRONIC DISEASE 🏥', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    FATIGUE = st.selectbox('FATIGUE 😴', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    ALLERGY = st.selectbox('ALLERGY 🤧', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    WHEEZING = st.selectbox('WHEEZING 😤', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    ALCOHOL_CONSUMPTION = st.selectbox('ALCOHOL CONSUMPTION 🍺', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    COUGHING = st.selectbox('COUGHING 🤧', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    SHORTNESS_OF_BREATH = st.selectbox('SHORTNESS OF BREATH 🫁', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    SWALLOWING_DIFFICULTY = st.selectbox('SWALLOWING DIFFICULTY 😣', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    CHEST_PAIN = st.selectbox('CHEST PAIN ❤️‍🩹', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
 
     # When user clicks Predict button
     if st.button('PREDICT 🔮'):
         # Create a dictionary for the input
         input_data = {
-            'AGE': [AGE],
             'GENDER': [GENDER],
+            'AGE': [AGE],
             'SMOKING': [SMOKING],
             'YELLOW_FINGERS': [YELLOW_FINGERS],
             'ANXIETY': [ANXIETY],
@@ -168,6 +168,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 

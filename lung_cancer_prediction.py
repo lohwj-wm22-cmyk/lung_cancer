@@ -80,13 +80,17 @@ def prediction_page():
         # Create a DataFrame to hold the encoded features
         encoded_input_df = pd.DataFrame(0, index=input_df.index, columns=model_columns)
 
+
+        # Ensure all column names in the dataset are stripped of spaces or match exactly
+        input_df.columns = input_df.columns.str.replace(' ', '_')
+
         # Copy continuous variables
         encoded_input_df[['AGE', 'SMOKING', 'YELLOW_FINGERS', 'ANXIETY', 'PEER_PRESSURE', 'CHRONIC_DISEASE', 
                   'FATIGUE', 'ALLERGY', 'WHEEZING', 'ALCOHOL_CONSUMING', 'COUGHING', 
                   'SHORTNESS_OF_BREATH', 'SWALLOWING_DIFFICULTY', 'CHEST_PAIN']] = input_df[['AGE', 'SMOKING', 
                   'YELLOW_FINGERS', 'ANXIETY', 'PEER_PRESSURE', 'CHRONIC_DISEASE','FATIGUE','ALLERGY', 'WHEEZING',
                   'ALCOHOL_CONSUMING','COUGHING','SHORTNESS_OF_BREATH', 'SWALLOWING_DIFFICULTY','CHEST_PAIN']]
-        
+
         # Hardcode categorical mappings : LIMITATIONS 
         categorical_data = {
             'GENDER': {'Male': 'GENDER_MALE', 'Female': 'GENDER_FEMALE'},

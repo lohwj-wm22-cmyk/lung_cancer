@@ -70,16 +70,16 @@ def prediction_page():
         input_df = pd.DataFrame(input_data)
 
         # Get the correct feature names from the scaler (if available)
-#        if hasattr(scaler, "feature_names_in_"):
-#            model_columns = scaler.feature_names_in_.tolist()
-#            st.write("🔍 Using feature names from scaler:", model_columns)
-#        else:
+        if hasattr(scaler, "feature_names_in_"):
+            model_columns = scaler.feature_names_in_.tolist()
+            st.write("🔍 Using feature names from scaler:", model_columns)
+        else:
             # Fallback: Use the expected column order (you might need to adjust this)
             model_columns = ['AGE', 'GENDER_M', 'GENDER_F', 'SMOKING', 'YELLOW_FINGERS',
                             'ANXIETY', 'PEER_PRESSURE', 'CHRONIC_DISEASE', 'FATIGUE',
                             'ALLERGY', 'WHEEZING', 'ALCOHOL_CONSUMING', 'COUGHING',
                             'SHORTNESS_OF_BREATH', 'SWALLOWING_DIFFICULTY', 'CHEST_PAIN']
-#            st.warning("⚠️ Using fallback feature names. Check if this matches your model training.")
+            st.warning("⚠️ Using fallback feature names. Check if this matches your model training.")
 
         # Create encoded dataframe with correct column order
         encoded_input_df = pd.DataFrame(0, index=input_df.index, columns=model_columns)
@@ -169,4 +169,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 

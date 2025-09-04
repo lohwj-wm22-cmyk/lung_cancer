@@ -80,12 +80,6 @@ def prediction_page():
         # Create a DataFrame to hold the encoded features
         encoded_input_df = pd.DataFrame(0, index=input_df.index, columns=model_columns)
 
-        st.write(input_df.columns)
-
-        # Ensure all column names in the dataset are stripped of spaces or match exactly
-        input_df.columns = input_df.columns.str.strip()
-        input_df.columns = input_df.columns.str.replace(' ', '_')
-
         # Copy continuous variables
         encoded_input_df[['AGE', 'SMOKING', 'YELLOW_FINGERS', 'ANXIETY', 'PEER_PRESSURE', 'CHRONIC_DISEASE', 
                   'FATIGUE', 'ALLERGY', 'WHEEZING', 'ALCOHOL_CONSUMING', 'COUGHING', 
@@ -172,5 +166,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 

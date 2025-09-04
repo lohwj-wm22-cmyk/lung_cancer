@@ -70,41 +70,45 @@ def prediction_page():
         input_df = pd.DataFrame(input_data)
 
         # Define model columns
-        model_columns = ['AGE','GENDER_MALE', 'GENDER_FEMALE', 'SMOKING_YES', 'SMOKING_NO',
+        model_columns = ['AGE','GENDER_M', 'GENDER_F', 'SMOKING_YES', 'SMOKING_NO',
                          'YELLOW_FINGERS_YES', 'YELLOW_FINGERS_NO','ANXIETY_YES', 'ANXIETY_NO',
                          'PEER_PRESSURE_YES', 'PEER_PRESSURE_NO','CHRONIC_DISEASE_YES', 'CHRONIC_DISEASE_NO',
                          'FATIGUE_YES', 'FATIGUE_NO','ALLERGY_YES', 'ALLERGY_NO','WHEEZING_YES', 'WHEEZING_NO',
-                         'ALCOHOL_CONSUMING_YES', 'ALCOHOL_CONSUMING_NO','COUGHING_YES', 'COUGHING_NO','SHORTNESS_OF_BREATH_YES', 
-                         'SHORTNESS_OF_BREATH_NO','SWALLOWING_DIFFICULTY_YES', 'SWALLOWING_DIFFICULTY_NO','CHEST_PAIN_YES', 'CHEST_PAIN_NO']
+                         'ALCOHOL_CONSUMPTION_YES', 'ALCOHOL_CONSUMPTION_NO','COUGHING_YES', 'COUGHING_NO',
+                         'SHORTNESS_OF_BREATH_YES', 'SHORTNESS_OF_BREATH_NO',
+                         'SWALLOWING_DIFFICULTY_YES', 'SWALLOWING_DIFFICULTY_NO',
+                         'CHEST_PAIN_YES', 'CHEST_PAIN_NO']
 
         # Create encoded dataframe
         encoded_input_df = pd.DataFrame(0, index=input_df.index, columns=model_columns)
         encoded_input_df['AGE'] = input_df['AGE']
 
-        # Hardcode categorical mappings
-        categorical_data = {
-            'GENDER': {'Male': 'GENDER_MALE', 'Female': 'GENDER_FEMALE'},
-            'SMOKING': {'Yes': 'SMOKING_YES', 'No': 'SMOKING_NO'},
-            'YELLOW_FINGERS': {'Yes': 'YELLOW_FINGERS_YES', 'No': 'YELLOW_FINGERS_NO'},
-            'ANXIETY': {'Yes': 'ANXIETY_YES', 'No': 'ANXIETY_NO'},
-            'PEER_PRESSURE': {'Yes': 'PEER_PRESSURE_YES', 'No': 'PEER_PRESSURE_NO'},
-            'CHRONIC_DISEASE': {'Yes': 'CHRONIC_DISEASE_YES', 'No': 'CHRONIC_DISEASE_NO'},
-            'FATIGUE': {'Yes': 'FATIGUE_YES', 'No': 'FATIGUE_NO'},
-            'ALLERGY': {'Yes': 'ALLERGY_YES', 'No': 'ALLERGY_NO'},
-            'WHEEZING': {'Yes': 'WHEEZING_YES', 'No': 'WHEEZING_NO'},
-            'ALCOHOL_CONSUMING': {'Yes': 'ALCOHOL_CONSUMING_YES', 'No': 'ALCOHOL_CONSUMING_NO'},
-            'COUGHING': {'Yes': 'COUGHING_YES', 'No': 'COUGHING_NO'},
-            'SHORTNESS_OF_BREATH': {'Yes': 'SHORTNESS_OF_BREATH_YES', 'No': 'SHORTNESS_OF_BREATH_NO'},
-            'SWALLOWING_DIFFICULTY': {'Yes': 'SWALLOWING_DIFFICULTY_YES', 'No': 'SWALLOWING_DIFFICULTY_NO'},
-            'CHEST_PAIN': {'Yes': 'CHEST_PAIN_YES', 'No': 'CHEST_PAIN_NO'}
-        }
+        # Helper function to convert 0/1 to 'No'/'Yes'
+        def get_category_value(value):
+            return 'YES' if value == 1 else 'NO'
 
-        # Encode categorical
-        for col in categorical_data:
-            for column in categorical_data[col].values():
-                encoded_input_df[column] = 0
-            value = input_df[col].iloc[0]
-            encoded_input_df[categorical_data[col][value]] = 1
+        # Encode categorical variables
+        # Gender encoding
+        if GENDER == 'M':
+            encoded_input_df['GENDER_M'] = 1
+        else:
+            encoded_input_df['GENDER_F'] = 1
+
+        # Encode binary variables
+        binary_vars = ['SMOKING', 'YELLOW_FINGERS', 'ANXIETY', 'PEER_PRESSURE', 
+                      'CHRONIC_DISEASE', 'FATIGUE', 'ALLERGY', 'WHEEZING', 
+                      'ALCOHOL_CONSUMPTION', 'COUGHING', 'SHORTNESS_OF_BREATH', 
+                      'SWALLOWING_DIFFICULTY', 'CHEST_PAIN']
+
+        for var in binary_vars:
+            value = input_df[var].iloc[0]
+            yes_col = f"{var}_YES"
+            no_col = f"{var}_NO"
+            
+            if yes_col in encoded_input_df.columns:
+                encoded_input_df[yes_col] = 1 if value == 1 else 0
+            if no_col in encoded_input_df.columns:
+                encoded_input_df[no_col] = 1 if value == 0 else 0
 
         # Ensure all columns are present in same order as model
         encoded_input_df = encoded_input_df.reindex(columns=model_columns, fill_value=0)
@@ -126,6 +130,9 @@ def prediction_page():
 
             except Exception as e:
                 st.error(f"⚠️ Error while scaling input: {e}")
+                st.write("Encoded DataFrame columns:", encoded_input_df.columns.tolist())
+                if hasattr(scaler, "feature_names_in_"):
+                    st.write("Scaler feature names:", scaler.feature_names_in_.tolist())
         else:
             st.error("⚠️ Scaler not loaded. Please check scaler.pkl.")
 
@@ -157,10 +164,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-

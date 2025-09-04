@@ -4,11 +4,8 @@ from joblib import load
 from sklearn.preprocessing import MinMaxScaler
 
 # Load the trained models
-# lr_model = load('logreg_model.joblib')
 rf_model = load('rf_model.joblib')
-# svm_model = load('svm_model.joblib')
 scaler = load('scaler.pkl') 
-# scaler = MinMaxScaler()
 
 # ---------------- Dataset Preview Page ----------------
 def dataset_preview_page():
@@ -19,10 +16,13 @@ def dataset_preview_page():
     dataset_link = 'https://www.kaggle.com/datasets/nancyalaswad90/lung-cancer'
     st.write(f'You can download the full dataset from [Kaggle]({dataset_link}).')
 
-    # Load a sample dataset for preview
-    df = pd.read_csv('lung_data.csv')  # Update this with your dataset file
-    st.write('HERE IS A PREVIEW OF THE DATASET:')
-    st.dataframe(df.head(20))
+    try:
+        # Load a sample dataset for preview
+        df = pd.read_csv('lung_data.csv')
+        st.write('HERE IS A PREVIEW OF THE DATASET:')
+        st.dataframe(df.head(20))
+    except FileNotFoundError:
+        st.error("❌ File 'lung_data.csv' not found. Please check the file path.")
 
 # ---------------- Prediction Page ----------------
 def prediction_page():
@@ -69,58 +69,37 @@ def prediction_page():
 
         input_df = pd.DataFrame(input_data)
 
-        # Define model columns
-        model_columns = ['AGE','GENDER_M', 'GENDER_F', 'SMOKING_YES', 'SMOKING_NO',
-                         'YELLOW_FINGERS_YES', 'YELLOW_FINGERS_NO','ANXIETY_YES', 'ANXIETY_NO',
-                         'PEER_PRESSURE_YES', 'PEER_PRESSURE_NO','CHRONIC_DISEASE_YES', 'CHRONIC_DISEASE_NO',
-                         'FATIGUE_YES', 'FATIGUE_NO','ALLERGY_YES', 'ALLERGY_NO','WHEEZING_YES', 'WHEEZING_NO',
-                         'ALCOHOL_CONSUMPTION_YES', 'ALCOHOL_CONSUMPTION_NO','COUGHING_YES', 'COUGHING_NO',
-                         'SHORTNESS_OF_BREATH_YES', 'SHORTNESS_OF_BREATH_NO',
-                         'SWALLOWING_DIFFICULTY_YES', 'SWALLOWING_DIFFICULTY_NO',
-                         'CHEST_PAIN_YES', 'CHEST_PAIN_NO']
+        # Define model columns - FIXED: Using proper column names
+        model_columns = ['AGE','GENDER_M', 'GENDER_F', 'SMOKING', 'YELLOW_FINGERS',
+                         'ANXIETY', 'PEER_PRESSURE', 'CHRONIC_DISEASE', 'FATIGUE',
+                         'ALLERGY', 'WHEEZING', 'ALCOHOL_CONSUMPTION', 'COUGHING',
+                         'SHORTNESS_OF_BREATH', 'SWALLOWING_DIFFICULTY', 'CHEST_PAIN']
 
-        # Create encoded dataframe
+        # Create a simpler encoded dataframe without one-hot encoding
         encoded_input_df = pd.DataFrame(0, index=input_df.index, columns=model_columns)
+        
+        # Set AGE directly
         encoded_input_df['AGE'] = input_df['AGE']
-
-        # Helper function to convert 0/1 to 'No'/'Yes'
-        def get_category_value(value):
-            return 'YES' if value == 1 else 'NO'
-
-        # Encode categorical variables
-        # Gender encoding
-        if GENDER == 'M':
-            encoded_input_df['GENDER_M'] = 1
-        else:
-            encoded_input_df['GENDER_F'] = 1
-
-        # Encode binary variables
+        
+        # Encode gender
+        encoded_input_df['GENDER_M'] = 1 if GENDER == 'M' else 0
+        encoded_input_df['GENDER_F'] = 1 if GENDER == 'F' else 0
+        
+        # Set binary variables directly (they're already 0/1)
         binary_vars = ['SMOKING', 'YELLOW_FINGERS', 'ANXIETY', 'PEER_PRESSURE', 
                       'CHRONIC_DISEASE', 'FATIGUE', 'ALLERGY', 'WHEEZING', 
                       'ALCOHOL_CONSUMPTION', 'COUGHING', 'SHORTNESS_OF_BREATH', 
                       'SWALLOWING_DIFFICULTY', 'CHEST_PAIN']
-
+        
         for var in binary_vars:
-            value = input_df[var].iloc[0]
-            yes_col = f"{var}_YES"
-            no_col = f"{var}_NO"
-            
-            if yes_col in encoded_input_df.columns:
-                encoded_input_df[yes_col] = 1 if value == 1 else 0
-            if no_col in encoded_input_df.columns:
-                encoded_input_df[no_col] = 1 if value == 0 else 0
+            encoded_input_df[var] = input_df[var]
 
-        # Ensure all columns are present in same order as model
-        encoded_input_df = encoded_input_df.reindex(columns=model_columns, fill_value=0)
+        # Debug: Show what we're sending to the model
+        st.write("📊 Input data being sent to model:")
+        st.dataframe(encoded_input_df)
 
         if scaler:
             try:
-                # Match scaler feature names if available
-                if hasattr(scaler, "feature_names_in_"):
-                    encoded_input_df = encoded_input_df.reindex(columns=scaler.feature_names_in_, fill_value=0)
-                    
-                st.write("✅ Encoded Input DataFrame:", encoded_input_df)  # Debugging step
-
                 # Scale input
                 input_df_scaled = scaler.transform(encoded_input_df)
 
@@ -129,7 +108,7 @@ def prediction_page():
                 st.success(f'🌟 PREDICTION: {"HIGH RISK OF LUNG CANCER" if prediction == 1 else "LOW RISK OF LUNG CANCER"}')
 
             except Exception as e:
-                st.error(f"⚠️ Error while scaling input: {e}")
+                st.error(f"⚠️ Error while scaling or predicting: {e}")
                 st.write("Encoded DataFrame columns:", encoded_input_df.columns.tolist())
                 if hasattr(scaler, "feature_names_in_"):
                     st.write("Scaler feature names:", scaler.feature_names_in_.tolist())
@@ -164,5 +143,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-

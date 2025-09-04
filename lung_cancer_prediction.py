@@ -60,7 +60,7 @@ def prediction_page():
             'FATIGUE': [FATIGUE],
             'ALLERGY': [ALLERGY],
             'WHEEZING': [WHEEZING],
-            'ALCOHOL_CONSUMING': [ALCOHOL_CONSUMPTION],
+            'ALCOHOL_CONSUMING': [ALCOHOL_CONSUMING],
             'COUGHING': [COUGHING],
             'SHORTNESS_OF_BREATH': [SHORTNESS_OF_BREATH],
             'SWALLOWING_DIFFICULTY': [SWALLOWING_DIFFICULTY],
@@ -143,4 +143,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 

@@ -79,11 +79,7 @@ def prediction_page():
 
         # Create encoded dataframe
         encoded_input_df = pd.DataFrame(0, index=input_df.index, columns=model_columns)
-        encoded_input_df[['AGE', 'SMOKING', 'YELLOW_FINGERS', 'ANXIETY', 'PEER_PRESSURE', 'CHRONIC_DISEASE', 
-                  'FATIGUE', 'ALLERGY', 'WHEEZING', 'ALCOHOL_CONSUMING', 'COUGHING', 
-                  'SHORTNESS_OF_BREATH', 'SWALLOWING_DIFFICULTY', 'CHEST_PAIN']] = input_df[['AGE', 'SMOKING', 
-                  'YELLOW_FINGERS', 'ANXIETY', 'PEER_PRESSURE', 'CHRONIC_DISEASE','FATIGUE','ALLERGY', 'WHEEZING',
-                  'ALCOHOL_CONSUMING','COUGHING','SHORTNESS_OF_BREATH', 'SWALLOWING_DIFFICULTY','CHEST_PAIN']]
+        encoded_input_df['AGE'] = input_df['AGE']
 
         # Hardcode categorical mappings
         categorical_data = {
@@ -161,6 +157,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 

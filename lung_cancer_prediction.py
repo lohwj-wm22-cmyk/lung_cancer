@@ -1,175 +1,140 @@
 import streamlit as st
 import pandas as pd
 from joblib import load
-from sklearn.preprocessing import MinMaxScaler
 
 # Load the trained models
-# lr_model = load('logreg_model.joblib')
 rf_model = load('rf_model.joblib')
-# svm_model = load('svm_model.joblib')
-scaler = load('scaler.pkl') 
-# scaler = MinMaxScaler()
+scaler = load('scaler.pkl')  # Make sure the scaler is saved properly
 
 # ---------------- Dataset Preview Page ----------------
 def dataset_preview_page():
-    st.title('📊 DATASET PREVIEW')
-    st.header('LUNG CANCER PREDICTION DATASET')
-
-    # Link to dataset
+    st.title('📊 Dataset Preview')
+    st.header('Lung Cancer Prediction Dataset')
+    
+    # Link to the dataset
     dataset_link = 'https://www.kaggle.com/datasets/nancyalaswad90/lung-cancer'
     st.write(f'You can download the full dataset from [Kaggle]({dataset_link}).')
-
+    
     # Load a sample dataset for preview
-    df = pd.read_csv('lung_data.csv')  # Update this with your dataset file
-    st.write('HERE IS A PREVIEW OF THE DATASET:')
+    df = pd.read_csv('lung_data.csv')  # Make sure the path is correct for your dataset
+    st.write('Here is a preview of the dataset:')
     st.dataframe(df.head(20))
 
 # ---------------- Prediction Page ----------------
 def prediction_page():
-    st.title('🫁 LUNG CANCER PREDICTION APP')
-    st.write('FILL IN THE PATIENT DETAILS TO PREDICT THE RISK OF LUNG CANCER.')
+    st.title('🩺 Patient Health Prediction App')
+    st.write('Fill in the details to predict the patient\'s health outcome.')
 
     # Input fields for user data
-    AGE = st.number_input('AGE 🎂', min_value=0, max_value=120, value=50)
-    GENDER = st.selectbox('GENDER 👤', ['M', 'F'])
-    SMOKING = st.selectbox('DO YOU SMOKE? 🚬', ['YES', 'NO'])
-    YELLOW_FINGERS = st.selectbox('YELLOW FINGERS ✋', ['YES', 'NO'])
-    ANXIETY = st.selectbox('ANXIETY 😟', ['YES', 'NO'])
-    PEER_PRESSURE = st.selectbox('PEER PRESSURE 👥', ['YES', 'NO'])
-    CHRONIC_DISEASE = st.selectbox('CHRONIC DISEASE 🏥', ['YES', 'NO'])
-    FATIGUE = st.selectbox('FATIGUE 😴', ['YES', 'NO'])
-    ALLERGY = st.selectbox('ALLERGY 🤧', ['YES', 'NO'])
-    WHEEZING = st.selectbox('WHEEZING 😤', ['YES', 'NO'])
-    ALCOHOL_CONSUMPTION = st.selectbox('ALCOHOL CONSUMPTION 🍺', ['YES', 'NO'])
-    COUGHING = st.selectbox('COUGHING 🤧', ['YES', 'NO'])
-    SHORTNESS_OF_BREATH = st.selectbox('SHORTNESS OF BREATH 🫁', ['YES', 'NO'])
-    SWALLOWING_DIFFICULTY = st.selectbox('SWALLOWING DIFFICULTY 😣', ['YES', 'NO'])
-    CHEST_PAIN = st.selectbox('CHEST PAIN ❤️‍🩹', ['YES', 'NO'])
+    gender = st.selectbox('Gender 👤', ['Male', 'Female'])
+    age = st.number_input('Age 🎂', min_value=0, max_value=120, value=25)
+    smoking = st.selectbox('Do you smoke? 🚬', ['Yes', 'No'])
+    yellow_fingers = st.selectbox('Yellow Fingers ✋', ['Yes', 'No'])
+    anxiety = st.selectbox('Anxiety 😟', ['Yes', 'No'])
+    peer_pressure = st.selectbox('Peer Pressure 👥', ['Yes', 'No'])
+    chronic_disease = st.selectbox('Chronic Disease 🏥', ['Yes', 'No'])
+    fatigue = st.selectbox('Fatigue 😴', ['Yes', 'No'])
+    allergy = st.selectbox('Allergy 🤧', ['Yes', 'No'])
+    wheezing = st.selectbox('Wheezing 😤', ['Yes', 'No'])
+    alcohol_consuming = st.selectbox('Alcohol Consumption 🍺', ['Yes', 'No'])
+    coughing = st.selectbox('Coughing 🤧', ['Yes', 'No'])
+    shortness_of_breath = st.selectbox('Shortness of Breath 🫁', ['Yes', 'No'])
+    swallowing_difficulty = st.selectbox('Swallowing Difficulty 😣', ['Yes', 'No'])
+    chest_pain = st.selectbox('Chest Pain ❤️‍🩹', ['Yes', 'No'])
 
     # When user clicks Predict button
-    if st.button('PREDICT 🔮'):
+    if st.button('Predict 🔮'):
         # Create a dictionary for the input
         input_data = {
-            'AGE': [AGE],
-            'GENDER': [GENDER],
-            'SMOKING': [SMOKING],
-            'YELLOW_FINGERS': [YELLOW_FINGERS],
-            'ANXIETY': [ANXIETY],
-            'PEER_PRESSURE': [PEER_PRESSURE],
-            'CHRONIC_DISEASE': [CHRONIC_DISEASE],
-            'FATIGUE': [FATIGUE],
-            'ALLERGY': [ALLERGY],
-            'WHEEZING': [WHEEZING],
-            'ALCOHOL_CONSUMPTION': [ALCOHOL_CONSUMPTION],
-            'COUGHING': [COUGHING],
-            'SHORTNESS_OF_BREATH': [SHORTNESS_OF_BREATH],
-            'SWALLOWING_DIFFICULTY': [SWALLOWING_DIFFICULTY],
-            'CHEST_PAIN': [CHEST_PAIN]
+            'gender': [gender],
+            'age': [age],
+            'smoking': [smoking],
+            'yellow_fingers': [yellow_fingers],
+            'anxiety': [anxiety],
+            'peer_pressure': [peer_pressure],
+            'chronic_disease': [chronic_disease],
+            'fatigue': [fatigue],
+            'allergy': [allergy],
+            'wheezing': [wheezing],
+            'alcohol_consuming': [alcohol_consuming],
+            'coughing': [coughing],
+            'shortness_of_breath': [shortness_of_breath],
+            'swallowing_difficulty': [swallowing_difficulty],
+            'chest_pain': [chest_pain]
         }
 
+        # Convert the input to a DataFrame
         input_df = pd.DataFrame(input_data)
 
-        # Define model columns
-        model_columns = [
-            'AGE',
-            'GENDER_F', 'GENDER_M',
-            'SMOKING_YES', 'SMOKING_NO',
-            'YELLOW_FINGERS_YES', 'YELLOW_FINGERS_NO',
-            'ANXIETY_YES', 'ANXIETY_NO',
-            'PEER_PRESSURE_YES', 'PEER_PRESSURE_NO',
-            'CHRONIC_DISEASE_YES', 'CHRONIC_DISEASE_NO',
-            'FATIGUE_YES', 'FATIGUE_NO',
-            'ALLERGY_YES', 'ALLERGY_NO',
-            'WHEEZING_YES', 'WHEEZING_NO',
-            'ALCOHOL_CONSUMPTION_YES', 'ALCOHOL_CONSUMPTION_NO',
-            'COUGHING_YES', 'COUGHING_NO',
-            'SHORTNESS_OF_BREATH_YES', 'SHORTNESS_OF_BREATH_NO',
-            'SWALLOWING_DIFFICULTY_YES', 'SWALLOWING_DIFFICULTY_NO',
-            'CHEST_PAIN_YES', 'CHEST_PAIN_NO'
-        ]
+        # Define the model columns (update as needed)
+        model_columns = ['age', 'smoking', 'yellow_fingers', 'anxiety', 'peer_pressure', 'chronic_disease',
+                         'fatigue', 'allergy', 'wheezing', 'alcohol_consuming', 'coughing', 'shortness_of_breath',
+                         'swallowing_difficulty', 'chest_pain', 'gender_Male', 'gender_Female']
 
-        # Create encoded dataframe
+        # Create a DataFrame to hold the encoded features
         encoded_input_df = pd.DataFrame(0, index=input_df.index, columns=model_columns)
-        encoded_input_df['AGE'] = input_df['AGE']
 
-        # Hardcode categorical mappings
-        categorical_data = {
-            'GENDER': {'M': 'GENDER_M', 'F': 'GENDER_F'},
-            'SMOKING': {'YES': 'SMOKING_YES', 'NO': 'SMOKING_NO'},
-            'YELLOW_FINGERS': {'YES': 'YELLOW_FINGERS_YES', 'NO': 'YELLOW_FINGERS_NO'},
-            'ANXIETY': {'YES': 'ANXIETY_YES', 'NO': 'ANXIETY_NO'},
-            'PEER_PRESSURE': {'YES': 'PEER_PRESSURE_YES', 'NO': 'PEER_PRESSURE_NO'},
-            'CHRONIC_DISEASE': {'YES': 'CHRONIC_DISEASE_YES', 'NO': 'CHRONIC_DISEASE_NO'},
-            'FATIGUE': {'YES': 'FATIGUE_YES', 'NO': 'FATIGUE_NO'},
-            'ALLERGY': {'YES': 'ALLERGY_YES', 'NO': 'ALLERGY_NO'},
-            'WHEEZING': {'YES': 'WHEEZING_YES', 'NO': 'WHEEZING_NO'},
-            'ALCOHOL_CONSUMPTION': {'YES': 'ALCOHOL_CONSUMPTION_YES', 'NO': 'ALCOHOL_CONSUMPTION_NO'},
-            'COUGHING': {'YES': 'COUGHING_YES', 'NO': 'COUGHING_NO'},
-            'SHORTNESS_OF_BREATH': {'YES': 'SHORTNESS_OF_BREATH_YES', 'NO': 'SHORTNESS_OF_BREATH_NO'},
-            'SWALLOWING_DIFFICULTY': {'YES': 'SWALLOWING_DIFFICULTY_YES', 'NO': 'SWALLOWING_DIFFICULTY_NO'},
-            'CHEST_PAIN': {'YES': 'CHEST_PAIN_YES', 'NO': 'CHEST_PAIN_NO'}
-        }
+        # Encode categorical data
+        encoded_input_df['age'] = input_df['age']
+        encoded_input_df['smoking'] = input_df['smoking'].map({'Yes': 1, 'No': 0})
+        encoded_input_df['yellow_fingers'] = input_df['yellow_fingers'].map({'Yes': 1, 'No': 0})
+        encoded_input_df['anxiety'] = input_df['anxiety'].map({'Yes': 1, 'No': 0})
+        encoded_input_df['peer_pressure'] = input_df['peer_pressure'].map({'Yes': 1, 'No': 0})
+        encoded_input_df['chronic_disease'] = input_df['chronic_disease'].map({'Yes': 1, 'No': 0})
+        encoded_input_df['fatigue'] = input_df['fatigue'].map({'Yes': 1, 'No': 0})
+        encoded_input_df['allergy'] = input_df['allergy'].map({'Yes': 1, 'No': 0})
+        encoded_input_df['wheezing'] = input_df['wheezing'].map({'Yes': 1, 'No': 0})
+        encoded_input_df['alcohol_consuming'] = input_df['alcohol_consuming'].map({'Yes': 1, 'No': 0})
+        encoded_input_df['coughing'] = input_df['coughing'].map({'Yes': 1, 'No': 0})
+        encoded_input_df['shortness_of_breath'] = input_df['shortness_of_breath'].map({'Yes': 1, 'No': 0})
+        encoded_input_df['swallowing_difficulty'] = input_df['swallowing_difficulty'].map({'Yes': 1, 'No': 0})
+        encoded_input_df['chest_pain'] = input_df['chest_pain'].map({'Yes': 1, 'No': 0})
 
-        # Encode categorical
-        for col in categorical_data:
-            for column in categorical_data[col].values():
-                encoded_input_df[column] = 0
-            value = input_df[col].iloc[0]
-            encoded_input_df[categorical_data[col][value]] = 1
+        # Encode gender
+        encoded_input_df['gender_Male'] = input_df['gender'].map({'Male': 1, 'Female': 0})
+        encoded_input_df['gender_Female'] = input_df['gender'].map({'Female': 1, 'Male': 0})
 
-        # Ensure all columns are present in same order as model
+        # Ensure all columns are present in the same order as the model
         encoded_input_df = encoded_input_df.reindex(columns=model_columns, fill_value=0)
 
+        # Scale the input data
         if scaler:
-            try:
-                # Match scaler feature names if available
-                if hasattr(scaler, "feature_names_in_"):
-                    encoded_input_df = encoded_input_df.reindex(columns=scaler.feature_names_in_, fill_value=0)
-                    
-                st.write("✅ Encoded Input DataFrame:", encoded_input_df)  # Debugging step
+            input_df_scaled = scaler.transform(encoded_input_df)
 
-                # Scale input
-                input_df_scaled = scaler.transform(encoded_input_df)
+            # Predict using the Random Forest model
+            rf_prediction = rf_model.predict(input_df_scaled)[0]
 
-                # Predict
-                prediction = rf_model.predict(input_df_scaled)[0]
-                st.success(f'🌟 PREDICTION: {"HIGH RISK OF LUNG CANCER" if prediction == 1 else "LOW RISK OF LUNG CANCER"}')
-
-            except Exception as e:
-                st.error(f"⚠️ Error while scaling input: {e}")
+            # Display the prediction result
+            st.success(f'🌟 Lung Cancer Prediction: {"At risk of lung cancer" if rf_prediction == 1 else "Not at risk of lung cancer"}')
         else:
-            st.error("⚠️ Scaler not loaded. Please check scaler.pkl.")
+            st.error("⚠️ Scaler not loaded properly. Please check the scaler file.")
 
-# ---------------- About Page ----------------
 def about_page():
-    st.title('📚 ABOUT THE PROJECT')
-    st.header('LUNG CANCER PREDICTION USING MACHINE LEARNING MODELS')
+    st.title('📚 About the Project')
+    st.header('Lung Cancer Prediction using Machine Learning Models')
     st.write("""
-    THIS PROJECT AIMS TO PREDICT THE LIKELIHOOD OF LUNG CANCER BASED ON PATIENT HEALTH DATA 
-    USING A RANDOM FOREST MODEL. THE DATASET INCLUDES RISK FACTORS SUCH AS SMOKING HABITS, 
-    MEDICAL HISTORY, AND RESPIRATORY SYMPTOMS.
-
-    THE GOAL IS TO ASSIST HEALTHCARE PROFESSIONALS IN IDENTIFYING INDIVIDUALS 
-    AT HIGH RISK EARLY, SUPPORTING PREVENTIVE CARE AND EARLY DIAGNOSIS.
+    This project aims to predict the risk of lung cancer based on patient data using a Random Forest model. 
+    The dataset includes features such as smoking habits, age, medical history (hypertension, anxiety), 
+    lifestyle factors (yellow fingers, fatigue), and others that help in predicting the likelihood of lung cancer.
+    
+    The model is trained using a lung cancer prediction dataset, and the goal is to assist healthcare professionals 
+    in identifying high-risk individuals early on.
     """)
 
-# ---------------- Main Function ----------------
+# Main function with sidebar navigation
 def main():
-    st.sidebar.title('🗂️ NAVIGATION')
-    menu_options = ['PREDICTION PAGE', 'DATASET PREVIEW', 'ABOUT THE PROJECT']
-    choice = st.sidebar.selectbox('GO TO', menu_options)
+    # Sidebar for navigation
+    st.sidebar.title('🗂️ Navigation')
+    menu_options = ['Prediction Page', 'Dataset Preview', 'About the Project']
+    choice = st.sidebar.selectbox('Go to', menu_options)
 
-    if choice == 'PREDICTION PAGE':
+    # Navigation based on user selection
+    if choice == 'Prediction Page':
         prediction_page()
-    elif choice == 'DATASET PREVIEW':
+    elif choice == 'Dataset Preview':
         dataset_preview_page()
-    elif choice == 'ABOUT THE PROJECT':
+    elif choice == 'About the Project':
         about_page()
 
 if __name__ == '__main__':
     main()
-
-
-
-
-

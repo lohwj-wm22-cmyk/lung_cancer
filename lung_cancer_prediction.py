@@ -40,7 +40,7 @@ def prediction_page():
     FATIGUE = st.selectbox('FATIGUE 😴', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
     ALLERGY = st.selectbox('ALLERGY 🤧', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
     WHEEZING = st.selectbox('WHEEZING 😤', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
-    ALCOHOL_CONSUMPTION = st.selectbox('ALCOHOL CONSUMPTION 🍺', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    ALCOHOL_CONSUMING = st.selectbox('ALCOHOL CONSUMING 🍺', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
     COUGHING = st.selectbox('COUGHING 🤧', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
     SHORTNESS_OF_BREATH = st.selectbox('SHORTNESS OF BREATH 🫁', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
     SWALLOWING_DIFFICULTY = st.selectbox('SWALLOWING DIFFICULTY 😣', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
@@ -60,7 +60,7 @@ def prediction_page():
             'FATIGUE': [FATIGUE],
             'ALLERGY': [ALLERGY],
             'WHEEZING': [WHEEZING],
-            'ALCOHOL_CONSUMPTION': [ALCOHOL_CONSUMPTION],
+            'ALCOHOL_CONSUMING': [ALCOHOL_CONSUMPTION],
             'COUGHING': [COUGHING],
             'SHORTNESS_OF_BREATH': [SHORTNESS_OF_BREATH],
             'SWALLOWING_DIFFICULTY': [SWALLOWING_DIFFICULTY],
@@ -72,7 +72,7 @@ def prediction_page():
         # Define model columns - FIXED: Using proper column names
         model_columns = ['AGE','GENDER_M', 'GENDER_F', 'SMOKING', 'YELLOW_FINGERS',
                          'ANXIETY', 'PEER_PRESSURE', 'CHRONIC_DISEASE', 'FATIGUE',
-                         'ALLERGY', 'WHEEZING', 'ALCOHOL_CONSUMPTION', 'COUGHING',
+                         'ALLERGY', 'WHEEZING', 'ALCOHOL_CONSUMING', 'COUGHING',
                          'SHORTNESS_OF_BREATH', 'SWALLOWING_DIFFICULTY', 'CHEST_PAIN']
 
         # Create a simpler encoded dataframe without one-hot encoding
@@ -88,7 +88,7 @@ def prediction_page():
         # Set binary variables directly (they're already 0/1)
         binary_vars = ['SMOKING', 'YELLOW_FINGERS', 'ANXIETY', 'PEER_PRESSURE', 
                       'CHRONIC_DISEASE', 'FATIGUE', 'ALLERGY', 'WHEEZING', 
-                      'ALCOHOL_CONSUMPTION', 'COUGHING', 'SHORTNESS_OF_BREATH', 
+                      'ALCOHOL_CONSUMING', 'COUGHING', 'SHORTNESS_OF_BREATH', 
                       'SWALLOWING_DIFFICULTY', 'CHEST_PAIN']
         
         for var in binary_vars:
@@ -143,3 +143,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

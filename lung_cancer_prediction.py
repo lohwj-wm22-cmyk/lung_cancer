@@ -70,23 +70,12 @@ def prediction_page():
         input_df = pd.DataFrame(input_data)
 
         # Define model columns
-        model_columns = [
-            'AGE',
-            'GENDER_F', 'GENDER_M',
-            'SMOKING_YES', 'SMOKING_NO',
-            'YELLOW_FINGERS_YES', 'YELLOW_FINGERS_NO',
-            'ANXIETY_YES', 'ANXIETY_NO',
-            'PEER_PRESSURE_YES', 'PEER_PRESSURE_NO',
-            'CHRONIC_DISEASE_YES', 'CHRONIC_DISEASE_NO',
-            'FATIGUE_YES', 'FATIGUE_NO',
-            'ALLERGY_YES', 'ALLERGY_NO',
-            'WHEEZING_YES', 'WHEEZING_NO',
-            'ALCOHOL_CONSUMPTION_YES', 'ALCOHOL_CONSUMPTION_NO',
-            'COUGHING_YES', 'COUGHING_NO',
-            'SHORTNESS_OF_BREATH_YES', 'SHORTNESS_OF_BREATH_NO',
-            'SWALLOWING_DIFFICULTY_YES', 'SWALLOWING_DIFFICULTY_NO',
-            'CHEST_PAIN_YES', 'CHEST_PAIN_NO'
-        ]
+        model_columns = ['AGE','GENDER_MALE', 'GENDER_FEMALE', 'SMOKING_YES', 'SMOKING_NO',
+                         'YELLOW_FINGERS_YES', 'YELLOW_FINGERS_NO','ANXIETY_YES', 'ANXIETY_NO',
+                         'PEER_PRESSURE_YES', 'PEER_PRESSURE_NO','CHRONIC_DISEASE_YES', 'CHRONIC_DISEASE_NO',
+                         'FATIGUE_YES', 'FATIGUE_NO','ALLERGY_YES', 'ALLERGY_NO','WHEEZING_YES', 'WHEEZING_NO',
+                         'ALCOHOL_CONSUMING_YES', 'ALCOHOL_CONSUMING_NO','COUGHING_YES', 'COUGHING_NO','SHORTNESS_OF_BREATH_YES', 
+                         'SHORTNESS_OF_BREATH_NO','SWALLOWING_DIFFICULTY_YES', 'SWALLOWING_DIFFICULTY_NO','CHEST_PAIN_YES', 'CHEST_PAIN_NO']
 
         # Create encoded dataframe
         encoded_input_df = pd.DataFrame(0, index=input_df.index, columns=model_columns)
@@ -94,40 +83,29 @@ def prediction_page():
 
         # Hardcode categorical mappings
         categorical_data = {
-            'GENDER': {'M': 'GENDER_M', 'F': 'GENDER_F'},
-            'SMOKING': {'YES': 'SMOKING_YES', 'NO': 'SMOKING_NO'},
-            'YELLOW_FINGERS': {'YES': 'YELLOW_FINGERS_YES', 'NO': 'YELLOW_FINGERS_NO'},
-            'ANXIETY': {'YES': 'ANXIETY_YES', 'NO': 'ANXIETY_NO'},
-            'PEER_PRESSURE': {'YES': 'PEER_PRESSURE_YES', 'NO': 'PEER_PRESSURE_NO'},
-            'CHRONIC_DISEASE': {'YES': 'CHRONIC_DISEASE_YES', 'NO': 'CHRONIC_DISEASE_NO'},
-            'FATIGUE': {'YES': 'FATIGUE_YES', 'NO': 'FATIGUE_NO'},
-            'ALLERGY': {'YES': 'ALLERGY_YES', 'NO': 'ALLERGY_NO'},
-            'WHEEZING': {'YES': 'WHEEZING_YES', 'NO': 'WHEEZING_NO'},
-            'ALCOHOL_CONSUMPTION': {'YES': 'ALCOHOL_CONSUMPTION_YES', 'NO': 'ALCOHOL_CONSUMPTION_NO'},
-            'COUGHING': {'YES': 'COUGHING_YES', 'NO': 'COUGHING_NO'},
-            'SHORTNESS_OF_BREATH': {'YES': 'SHORTNESS_OF_BREATH_YES', 'NO': 'SHORTNESS_OF_BREATH_NO'},
-            'SWALLOWING_DIFFICULTY': {'YES': 'SWALLOWING_DIFFICULTY_YES', 'NO': 'SWALLOWING_DIFFICULTY_NO'},
-            'CHEST_PAIN': {'YES': 'CHEST_PAIN_YES', 'NO': 'CHEST_PAIN_NO'}
+            'GENDER': {'Male': 'GENDER_MALE', 'Female': 'GENDER_FEMALE'},
+            'SMOKING': {'Yes': 'SMOKING_YES', 'No': 'SMOKING_NO'},
+            'YELLOW_FINGERS': {'Yes': 'YELLOW_FINGERS_YES', 'No': 'YELLOW_FINGERS_NO'},
+            'ANXIETY': {'Yes': 'ANXIETY_YES', 'No': 'ANXIETY_NO'},
+            'PEER_PRESSURE': {'Yes': 'PEER_PRESSURE_YES', 'No': 'PEER_PRESSURE_NO'},
+            'CHRONIC_DISEASE': {'Yes': 'CHRONIC_DISEASE_YES', 'No': 'CHRONIC_DISEASE_NO'},
+            'FATIGUE': {'Yes': 'FATIGUE_YES', 'No': 'FATIGUE_NO'},
+            'ALLERGY': {'Yes': 'ALLERGY_YES', 'No': 'ALLERGY_NO'},
+            'WHEEZING': {'Yes': 'WHEEZING_YES', 'No': 'WHEEZING_NO'},
+            'ALCOHOL_CONSUMING': {'Yes': 'ALCOHOL_CONSUMING_YES', 'No': 'ALCOHOL_CONSUMING_NO'},
+            'COUGHING': {'Yes': 'COUGHING_YES', 'No': 'COUGHING_NO'},
+            'SHORTNESS_OF_BREATH': {'Yes': 'SHORTNESS_OF_BREATH_YES', 'No': 'SHORTNESS_OF_BREATH_NO'},
+            'SWALLOWING_DIFFICULTY': {'Yes': 'SWALLOWING_DIFFICULTY_YES', 'No': 'SWALLOWING_DIFFICULTY_NO'},
+            'CHEST_PAIN': {'Yes': 'CHEST_PAIN_YES', 'No': 'CHEST_PAIN_NO'}
         }
 
-        # Encode categorical variables
+        # Encode categorical
         for col in categorical_data:
-        # Set all columns to 0
             for column in categorical_data[col].values():
                 encoded_input_df[column] = 0
-    
-        # Get the value for the current column in input_df
-        value = input_df[col].iloc[0]
+            value = input_df[col].iloc[0]
+            encoded_input_df[categorical_data[col][value]] = 1
 
-        # Check if the value is a valid key in the categorical data mapping
-if value in categorical_data[col]:
-        # If valid, set the corresponding column to 1
-        encoded_input_df[categorical_data[col][value]] = 1
-    else:
-        # If invalid, print a warning or set to 0 (or handle it as needed)
-        st.warning(f"Warning: {value} is not a valid value for {col}. Setting to 0.")
-        # Optionally, you could handle this case by skipping or setting default value:
-        # encoded_input_df[categorical_data[col].get(value, 'DEFAULT_COLUMN')] = 1
         # Ensure all columns are present in same order as model
         encoded_input_df = encoded_input_df.reindex(columns=model_columns, fill_value=0)
 
@@ -179,10 +157,6 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
 
 
 

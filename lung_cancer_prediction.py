@@ -110,13 +110,24 @@ def prediction_page():
             'CHEST_PAIN': {'YES': 'CHEST_PAIN_YES', 'NO': 'CHEST_PAIN_NO'}
         }
 
-        # Encode categorical
+        # Encode categorical variables
         for col in categorical_data:
+        # Set all columns to 0
             for column in categorical_data[col].values():
                 encoded_input_df[column] = 0
-            value = input_df[col].iloc[0]
-            encoded_input_df[categorical_data[col][value]] = 1
+    
+        # Get the value for the current column in input_df
+        value = input_df[col].iloc[0]
 
+        # Check if the value is a valid key in the categorical data mapping
+if value in categorical_data[col]:
+        # If valid, set the corresponding column to 1
+        encoded_input_df[categorical_data[col][value]] = 1
+    else:
+        # If invalid, print a warning or set to 0 (or handle it as needed)
+        st.warning(f"Warning: {value} is not a valid value for {col}. Setting to 0.")
+        # Optionally, you could handle this case by skipping or setting default value:
+        # encoded_input_df[categorical_data[col].get(value, 'DEFAULT_COLUMN')] = 1
         # Ensure all columns are present in same order as model
         encoded_input_df = encoded_input_df.reindex(columns=model_columns, fill_value=0)
 
@@ -168,6 +179,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 

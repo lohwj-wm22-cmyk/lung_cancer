@@ -72,7 +72,6 @@ def prediction_page():
         # Get the correct feature names from the scaler (if available)
         if hasattr(scaler, "feature_names_in_"):
             model_columns = scaler.feature_names_in_.tolist()
-            st.write("🔍 Using feature names from scaler:", model_columns)
         else:
             # Fallback: Use the expected column order (you might need to adjust this)
             model_columns = ['AGE', 'GENDER_M', 'GENDER_F', 'SMOKING', 'YELLOW_FINGERS',
@@ -169,5 +168,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 

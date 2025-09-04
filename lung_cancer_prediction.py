@@ -50,8 +50,8 @@ def prediction_page():
     if st.button('PREDICT 🔮'):
         # Create a dictionary for the input
         input_data = {
-            'AGE': [AGE],
             'GENDER': [GENDER],
+            'AGE': [AGE],
             'SMOKING': [SMOKING],
             'YELLOW_FINGERS': [YELLOW_FINGERS],
             'ANXIETY': [ANXIETY],
@@ -71,21 +71,21 @@ def prediction_page():
 
         # Define model columns
         model_columns = [
-            'GENDER': [GENDER],
-            'AGE': [AGE],
-            'SMOKING': [SMOKING],
-            'YELLOW_FINGERS': [YELLOW_FINGERS],
-            'ANXIETY': [ANXIETY],
-            'PEER_PRESSURE': [PEER_PRESSURE],
-            'CHRONIC_DISEASE': [CHRONIC_DISEASE],
-            'FATIGUE': [FATIGUE],
-            'ALLERGY': [ALLERGY],
-            'WHEEZING': [WHEEZING],
-            'ALCOHOL_CONSUMPTION': [ALCOHOL_CONSUMPTION],
-            'COUGHING': [COUGHING],
-            'SHORTNESS_OF_BREATH': [SHORTNESS_OF_BREATH],
-            'SWALLOWING_DIFFICULTY': [SWALLOWING_DIFFICULTY],
-            'CHEST_PAIN': [CHEST_PAIN]
+            'AGE',
+            'GENDER_F', 'GENDER_M',
+            'SMOKING_YES', 'SMOKING_NO',
+            'YELLOW_FINGERS_YES', 'YELLOW_FINGERS_NO',
+            'ANXIETY_YES', 'ANXIETY_NO',
+            'PEER_PRESSURE_YES', 'PEER_PRESSURE_NO',
+            'CHRONIC_DISEASE_YES', 'CHRONIC_DISEASE_NO',
+            'FATIGUE_YES', 'FATIGUE_NO',
+            'ALLERGY_YES', 'ALLERGY_NO',
+            'WHEEZING_YES', 'WHEEZING_NO',
+            'ALCOHOL_CONSUMPTION_YES', 'ALCOHOL_CONSUMPTION_NO',
+            'COUGHING_YES', 'COUGHING_NO',
+            'SHORTNESS_OF_BREATH_YES', 'SHORTNESS_OF_BREATH_NO',
+            'SWALLOWING_DIFFICULTY_YES', 'SWALLOWING_DIFFICULTY_NO',
+            'CHEST_PAIN_YES', 'CHEST_PAIN_NO'
         ]
 
         # Create encoded dataframe
@@ -168,6 +168,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 

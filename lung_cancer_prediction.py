@@ -7,38 +7,6 @@ from sklearn.preprocessing import MinMaxScaler
 rf_model = load('rf_model.joblib')
 scaler = load('scaler.pkl') 
 
-# Custom CSS for styling
-st.markdown("""
-<style>
-    .main-title {
-        text-align: center;
-        color: #1E88E5;
-        margin-bottom: 30px;
-    }
-    .section-header {
-        color: #0D47A1;
-        border-bottom: 2px solid #64B5F6;
-        padding-bottom: 10px;
-        margin-top: 30px;
-        margin-bottom: 20px;
-    }
-    .stRadio > div {
-        flex-direction: row;
-        gap: 20px;
-    }
-    .stRadio > label {
-        font-weight: 500;
-    }
-    .prediction-box {
-        background-color: #E3F2FD;
-        padding: 20px;
-        border-radius: 10px;
-        margin-top: 30px;
-        border-left: 5px solid #1E88E5;
-    }
-</style>
-""", unsafe_allow_html=True)
-
 # ---------------- Dataset Preview Page ----------------
 def dataset_preview_page():
     st.title('📊 DATASET PREVIEW')
@@ -58,53 +26,28 @@ def dataset_preview_page():
 
 # ---------------- Prediction Page ----------------
 def prediction_page():
-    st.markdown('<h1 class="main-title">🫁 LUNG CANCER PREDICTION APP</h1>', unsafe_allow_html=True)
+    st.title('🫁 LUNG CANCER PREDICTION APP')
     st.write('FILL IN THE PATIENT DETAILS TO PREDICT THE RISK OF LUNG CANCER.')
-    
-    # Personal Information Section
-    st.markdown('<h2 class="section-header">Personal Information</h2>', unsafe_allow_html=True)
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        GENDER = st.radio('Gender', ['M', 'F'], horizontal=True)
-    with col2:
-        AGE = st.slider('Age', min_value=0, max_value=120, value=45)
-    
-    st.markdown("---")
-    
-    # Symptoms Section
-    st.markdown('<h2 class="section-header">Symptoms</h2>', unsafe_allow_html=True)
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        ANXIETY = st.radio('ANXIETY', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', horizontal=True)
-        CHRONIC_DISEASE = st.radio('CHRONIC DISEASE', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', horizontal=True)
-        FATIGUE = st.radio('FATIGUE', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', horizontal=True)
-        ALLERGY = st.radio('ALLERGY', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', horizontal=True)
-        WHEEZING = st.radio('WHEEZING', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', horizontal=True)
-    
-    with col2:
-        COUGHING = st.radio('COUGHING', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', horizontal=True)
-        SHORTNESS_OF_BREATH = st.radio('SHORTNESS OF BREATH', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', horizontal=True)
-        SWALLOWING_DIFFICULTY = st.radio('SWALLOWING DIFFICULTY', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', horizontal=True)
-        CHEST_PAIN = st.radio('CHEST PAIN', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', horizontal=True)
-        YELLOW_FINGERS = st.radio('YELLOW FINGERS', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', horizontal=True)
-    
-    st.markdown("---")
-    
-    # Lifestyle Factors Section
-    st.markdown('<h2 class="section-header">Lifestyle Factors</h2>', unsafe_allow_html=True)
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        SMOKING = st.radio('DO YOU SMOKE?', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', horizontal=True)
-    with col2:
-        ALCOHOL_CONSUMING = st.radio('ALCOHOL CONSUMING', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', horizontal=True)
-    
-    PEER_PRESSURE = st.radio('PEER PRESSURE', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', horizontal=True)
+
+    # Input fields for user data
+    GENDER = st.selectbox('Gender 👤', ['M', 'F'])
+    AGE = st.number_input('Age 🎂', min_value=0, max_value=120, value=25)
+    SMOKING = st.selectbox('DO YOU SMOKE? 🚬', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    YELLOW_FINGERS = st.selectbox('YELLOW FINGERS ✋', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    ANXIETY = st.selectbox('ANXIETY 😟', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    PEER_PRESSURE = st.selectbox('PEER PRESSURE 👥', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    CHRONIC_DISEASE = st.selectbox('CHRONIC DISEASE 🏥', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    FATIGUE = st.selectbox('FATIGUE 😴', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    ALLERGY = st.selectbox('ALLERGY 🤧', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    WHEEZING = st.selectbox('WHEEZING 😤', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    ALCOHOL_CONSUMING = st.selectbox('ALCOHOL CONSUMING 🍺', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    COUGHING = st.selectbox('COUGHING 🤧', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    SHORTNESS_OF_BREATH = st.selectbox('SHORTNESS OF BREATH 🫁', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    SWALLOWING_DIFFICULTY = st.selectbox('SWALLOWING DIFFICULTY 😣', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
+    CHEST_PAIN = st.selectbox('CHEST PAIN ❤️‍🩹', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
 
     # When user clicks Predict button
-    if st.button('PREDICT RISK', use_container_width=True):
+    if st.button('PREDICT 🔮'):
         # Create a dictionary for the input
         input_data = {
             'GENDER': [GENDER],
@@ -181,16 +124,7 @@ def prediction_page():
 
                 # Predict
                 prediction = rf_model.predict(input_df_scaled)[0]
-                
-                # Display prediction with styling
-                st.markdown('<div class="prediction-box">', unsafe_allow_html=True)
-                if prediction == 1:
-                    st.error('🛑 HIGH RISK OF LUNG CANCER')
-                    st.write("This prediction suggests a higher likelihood of lung cancer. Please consult with a healthcare professional for further evaluation.")
-                else:
-                    st.success('✅ LOW RISK OF LUNG CANCER')
-                    st.write("This prediction suggests a lower likelihood of lung cancer. However, regular check-ups are still recommended for maintaining good health.")
-                st.markdown('</div>', unsafe_allow_html=True)
+                st.success(f'🌟 PREDICTION: {"HIGH RISK OF LUNG CANCER" if prediction == 1 else "LOW RISK OF LUNG CANCER"}')
 
             except Exception as e:
                 st.error(f"⚠️ Error while scaling or predicting: {e}")
@@ -230,3 +164,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
